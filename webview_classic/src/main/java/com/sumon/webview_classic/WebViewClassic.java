@@ -64,7 +64,7 @@ public class WebViewClassic {
 
             public void onPageFinished(WebView view, String url) {
                 try {
-                    if (progressDialog.isShowing()) {
+                    if (progressDialog != null &&progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
                 } catch (Exception exception) {
