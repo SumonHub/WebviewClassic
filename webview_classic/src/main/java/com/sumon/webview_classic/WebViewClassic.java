@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -16,11 +19,15 @@ import android.webkit.WebViewClient;
  */
 
 public class WebViewClassic {
-    private static final String TAG = WebViewClassic.class.getSimpleName();
+    private static final String TAG = "WebViewClassic";
 
     private Context context;
     private WebView webView;
     private String webUrl;
+    private ProgressDialog progressDialog;
+    private long dialogDuration = 2000;
+    private boolean setDialogDuration = false;
+    private boolean clearCache = false;
 
     public WebViewClassic(Context context, WebView webView, String webUrl) {
         this.context = context;
@@ -28,10 +35,50 @@ public class WebViewClassic {
         this.webUrl = webUrl;
     }
 
+    public void setCustomDialog(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
+    }
+
+    public void setDialogDuration(long dialogDuration) {
+        this.dialogDuration = dialogDuration;
+        this.setDialogDuration = true;
+    }
+
+    public void setClearCache(boolean clearCache) {
+        this.clearCache = clearCache;
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     public void startWebView() {
+
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setProgressNumberFormat(null);
+            progressDialog.setProgressPercentFormat(null);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+        } else {
+            progressDialog.show();
+        }
+
+
+        if (setDialogDuration) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    , dialogDuration);
+        }
+
+        webView.loadUrl(webUrl);
         webView.setWebViewClient(new WebViewClient() {
-            ProgressDialog progressDialog;
 
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -52,30 +99,29 @@ public class WebViewClassic {
                 return true;
             }
 
-            //Show loader on url load
-            public void onLoadResource(WebView view, String url) {
-                if (progressDialog == null) {
-                    // in standard case YourActivity.this
-                    progressDialog = new ProgressDialog(context);
-                    progressDialog.setMessage("Loading...");
-                    progressDialog.show();
-                }
-            }
-
+            @Override
             public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.d(TAG, "onPageFinished");
                 try {
-                    if (progressDialog != null && progressDialog.isShowing()) {
+                    if (!setDialogDuration && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             }
+
         });
-        // Javascript inabled on webview
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(webUrl);
+
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+
+        if (clearCache) {
+            // Clear all the Application Cache, Web SQL Database and the HTML5 Web Storage
+            WebStorage.getInstance().deleteAllData();
+        }
 
     }
-
 }
