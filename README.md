@@ -61,3 +61,8 @@ Step 3. if you want back capability override onBackPressed() like bellow
         webViewClassic.setCustomDialog(progressDialog); // default progressDialog
         webViewClassic.setDialogDuration(10*1000); // default 2000
         webViewClassic.setClearCache(true); // default false
+        
+## Check out example code: [Example](https://github.com/SumonHub/WebViewClassic/tree/master/app)
+
+# Demo
+![](https://github.com/SumonHub/WebViewClassic/blob/master/demo/demo.gif)
