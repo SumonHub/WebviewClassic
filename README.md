@@ -1,5 +1,7 @@
 # WebViewClassic
-an easy-to-use tool for using YouTube SearchApi
+Turn your responsive website into app easily.
+
+[![](https://jitpack.io/v/SumonHub/WebviewClassic.svg)](https://jitpack.io/#SumonHub/WebviewClassic)
 
 # Gradle Dependency
 Step 1. Add the JitPack repository to your build file
@@ -14,7 +16,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
       
       dependencies {
-                implementation 'com.github.SumonHub:WebViewClassic:1.0.1'
+                implementation 'com.github.SumonHub:WebViewClassic:1.0.2'
         }
         
 # How to use
@@ -30,8 +32,7 @@ Step 2. in xml file paste bellow code
           <WebView
               android:id="@+id/webView1"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              />
+              android:layout_height="fill_parent" />
       </LinearLayout>
 
 Step 3. In onCreate() method in .java file paste bellow code
@@ -54,3 +55,9 @@ Step 3. if you want back capability override onBackPressed() like bellow
                   super.onBackPressed();
               }
           }
+          
+## Public method
+        
+        webViewClassic.setCustomDialog(progressDialog); // default progressDialog
+        webViewClassic.setDialogDuration(10*1000); // default 2000
+        webViewClassic.setClearCache(true); // default false
