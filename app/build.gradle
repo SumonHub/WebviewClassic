@@ -27,8 +27,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    // implementation 'com.github.SumonHub:WebviewClassic:1.0.1'
+    implementation 'com.github.SumonHub:WebviewClassic:1.0.2'
 
-    implementation project(":webview_classic")
+    // implementation project(":webview_classic")
 
 }
